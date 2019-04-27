@@ -1,60 +1,59 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'configs.dart' show weatherApiKey;
+import 'service.dart' show request;
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return CupertinoApp(
+    return MaterialApp(
       title: 'Maid',
       home: HomeScreen(),
     );
   }
 }
 
-const devicesTabName = '设备';
-const statisticTabName = '统计';
-
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return CupertinoTabScaffold(
-        tabBar: CupertinoTabBar(items: [
-          BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.gear_solid),
-              title: Text(devicesTabName)),
-          BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.folder_solid),
-              title: Text(statisticTabName)),
-        ]),
-        tabBuilder: (context, position) {
-          return CupertinoTabView(
-            builder: (context) {
-              return CupertinoPageScaffold(
-                navigationBar: CupertinoNavigationBar(
-                  middle: position == 0
-                      ? Text(devicesTabName)
-                      : Text(statisticTabName),
-                ),
-                child: position == 0
-                    ? new Devices(position.toString())
-                    : Text(statisticTabName),
-              );
-            },
-          );
-        });
+    return Scaffold(
+      body: Center(
+        child: DevicesPage(),
+      ),
+    );
   }
 }
 
 /// devices page
-class Devices extends StatelessWidget {
-  final String position;
-  Devices(this.position);
+class DevicesPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return new _DevicePageState();
+  }
+}
+
+class _DevicePageState extends State<DevicesPage> {
+  _getWeather(weatherType) async {
+    var data = await request('https', 'free-api.heweather.net', path: '/s6/weather/now', params: {
+      'location': 'beijing',
+      'key': weatherApiKey
+    });
+    print(data);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text("欢迎来到 :$position"),
+    return Column(
+      children: <Widget>[
+        Text("devices"),
+        RaisedButton(
+          onPressed: () => {
+            _getWeather('now')
+          },
+          child: new Text('Get Weather'),
+        ),
+      ]
     );
   }
 }

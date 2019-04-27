@@ -19,41 +19,65 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: DevicesPage(),
+        child: Container(
+          child: Card(
+            child: Row(
+              children: <Widget>[
+                Weather(),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
 }
 
-/// devices page
-class DevicesPage extends StatefulWidget {
+class Weather extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return new _DevicePageState();
+    return new _WeatherState();
   }
 }
 
-class _DevicePageState extends State<DevicesPage> {
+class _WeatherState extends State<Weather> {
+  String _location = 'beijing';
+  String _locationName = '';
+  String _temperature = '';
+
   _getWeather(weatherType) async {
-    var data = await request('https', 'free-api.heweather.net', path: '/s6/weather/now', params: {
-      'location': 'beijing',
-      'key': weatherApiKey
+    var response = await request('https', 'free-api.heweather.net',
+        path: '/s6/weather/now',
+        params: {'location': _location, 'key': weatherApiKey});
+    print(response['data']['HeWeather6'][0]);
+    setState(() {
+      var weather = response['data']['HeWeather6'][0];
+      var basic = weather['basic'];
+      var now = weather['now'];
+      _locationName = basic['location'];
+      _temperature = now['tmp'];
     });
-    print(data);
+  }
+
+  @override
+  initState() {
+    _getWeather('now');
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_temperature.length == 0) {
+      return Text('');
+    }
     return Column(
       children: <Widget>[
-        Text("devices"),
-        RaisedButton(
-          onPressed: () => {
-            _getWeather('now')
-          },
-          child: new Text('Get Weather'),
-        ),
-      ]
+        Text(_locationName),
+        Row(
+          children: <Widget>[
+            Text(_temperature + '℃'),
+          ],
+        )
+      ],
     );
   }
 }

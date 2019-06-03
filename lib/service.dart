@@ -1,5 +1,6 @@
 import 'dart:convert' show utf8, json;
 import 'dart:io';
+import 'configs.dart' show weatherHost, weatherApiKey;
 
 const defaultParams = {};
 
@@ -16,4 +17,22 @@ request(String scheme, String host,
     'statusCode': response.statusCode,
     'data': data,
   };
+}
+
+getData(res) {
+  return res['data']['HeWeather6'][0];
+}
+
+getWeather(_location) async {
+  var res = await request('https', weatherHost,
+      path: '/s6/weather/now',
+      params: {'location': _location, 'key': weatherApiKey});
+  return getData(res);
+}
+
+getForecast(_location) async {
+  var res = await request('https', weatherHost,
+      path: '/s6/weather/forecast',
+      params: {'location': _location, 'key': weatherApiKey});
+  return getData(res);
 }

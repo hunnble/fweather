@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'configs.dart' show weatherApiKey;
-import 'service.dart' show request;
+import 'package:maid/service.dart';
+import 'service.dart' show getWeather, getForecast;
 
 void main() => runApp(MyApp());
 
@@ -56,12 +56,8 @@ class _WeatherState extends State<Weather> {
   String _windSc = '';
 
   _getWeather(weatherType) async {
-    var response = await request('https', 'free-api.heweather.net',
-        path: '/s6/weather/now',
-        params: {'location': _location, 'key': weatherApiKey});
-    print(response['data']['HeWeather6'][0]);
+    var weather = await getWeather(_location);
     setState(() {
-      var weather = response['data']['HeWeather6'][0];
       var basic = weather['basic'];
       var now = weather['now'];
       _locationName = basic['location'];
@@ -73,9 +69,15 @@ class _WeatherState extends State<Weather> {
     });
   }
 
+  _getForecast() async {
+    var forecast = await getForecast(_location);
+    print(forecast);
+  }
+
   @override
   initState() {
     _getWeather('now');
+    _getForecast();
   }
 
   @override

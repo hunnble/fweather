@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:maid/service.dart';
-import 'service.dart' show getWeather, getForecast;
+import 'service.dart' show getCity, getWeather, getForecast;
 
 void main() => runApp(MyApp());
 
@@ -23,7 +23,7 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Container(
         padding: EdgeInsets.fromLTRB(10, 30, 10, 10),
-        height: 300,
+        height: 200,
         child: Card(
           elevation: 5,
           shape: RoundedRectangleBorder(
@@ -47,19 +47,21 @@ class Weather extends StatefulWidget {
 }
 
 class _WeatherState extends State<Weather> {
-  String _location = 'beijing';
+  List _cities = [];
+  String _location = '北京';
   String _locationName = '';
   String _temperature = '';
   String _condText = '';
   String _fl = '';
   String _windDir = '';
   String _windSc = '';
+  List _forecast = [];
 
   _getWeather(weatherType) async {
-    var weather = await getWeather(_location);
+    final weather = await getWeather(_location);
     setState(() {
-      var basic = weather['basic'];
-      var now = weather['now'];
+      final basic = weather['basic'];
+      final now = weather['now'];
       _locationName = basic['location'];
       _temperature = now['tmp'];
       _condText = now['cond_txt'];
@@ -70,14 +72,25 @@ class _WeatherState extends State<Weather> {
   }
 
   _getForecast() async {
-    var forecast = await getForecast(_location);
-    print(forecast);
+    final forecast = await getForecast(_location);
+    setState(() {
+      _forecast = forecast['daily_forecast'];
+    });
+  }
+
+  _getCities(location) async {
+    _cities = await getCity(location: location);
+    _getWeather('now');
+    _getForecast();
+  }
+
+  _getCity(city) {
+    _location = city['location'];
   }
 
   @override
   initState() {
-    _getWeather('now');
-    _getForecast();
+    _getCities('beijing');
   }
 
   @override

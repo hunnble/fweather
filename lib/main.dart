@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:maid/service.dart';
 import 'service.dart' show getCity, getWeather, getForecast;
+import 'theme_data.dart' show themeData;
 
 void main() => runApp(MyApp());
 
@@ -9,6 +10,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Maid',
+      theme: themeData,
       home: HomeScreen(),
     );
   }

@@ -25,17 +25,7 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Container(
         padding: EdgeInsets.fromLTRB(10, 30, 10, 10),
-        height: 200,
-        child: Card(
-          elevation: 5,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: Container(
-            padding: EdgeInsets.all(15),
-            child: Weather(),
-          ),
-        ),
+        child: Weather(),
       ),
     );
   }
@@ -77,6 +67,7 @@ class _WeatherState extends State<Weather> {
     final forecast = await getForecast(_location);
     setState(() {
       _forecast = forecast['daily_forecast'];
+      print(_forecast);
     });
   }
 
@@ -121,6 +112,17 @@ class _WeatherState extends State<Weather> {
               ],
             )
           ],
+        ),
+        Expanded(
+          child: ListView.builder(
+            scrollDirection: Axis.vertical,
+            itemCount: _forecast.length,
+            itemBuilder: (BuildContext context, int index) {
+              return new ListTile(
+                title: new Text(_forecast[index]['cond_txt_d'])
+              );
+            },
+          ),
         )
       ],
     );

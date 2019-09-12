@@ -119,8 +119,7 @@ class _WeatherState extends State<Weather> {
             itemCount: _forecast.length,
             itemBuilder: (BuildContext context, int index) {
               return new ListTile(
-                title: new Text(_forecast[index]['cond_txt_d'])
-              );
+                  title: new Text(_forecast[index]['cond_txt_d']));
             },
           ),
         )

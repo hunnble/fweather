@@ -43,19 +43,21 @@ class _WeatherState extends State<Weather> {
   String _location = '北京';
   String _locationName = '';
   String _temperature = '';
+  String _condCode = '';
   String _condText = '';
   String _fl = '';
   String _windDir = '';
   String _windSc = '';
   List _forecast = [];
 
-  _getWeather(weatherType) async {
+  void _getWeather(weatherType) async {
     final weather = await getWeather(_location);
     setState(() {
       final basic = weather['basic'];
       final now = weather['now'];
       _locationName = basic['location'];
       _temperature = now['tmp'];
+      _condCode = now['cond_code'];
       _condText = now['cond_txt'];
       _fl = now['fl'];
       _windDir = now['wind_dir'];
@@ -63,7 +65,7 @@ class _WeatherState extends State<Weather> {
     });
   }
 
-  _getForecast() async {
+  void _getForecast() async {
     final forecast = await getForecast(_location);
     setState(() {
       _forecast = forecast['daily_forecast'];
@@ -71,14 +73,61 @@ class _WeatherState extends State<Weather> {
     });
   }
 
-  _getCities(location) async {
+  void _getCities(location) async {
     _cities = await getCity(location: location);
     _getWeather('now');
     _getForecast();
   }
 
-  _getCity(city) {
+  void _getCity(city) {
     _location = city['location'];
+  }
+
+  List<Widget> _getForecastWidgets() {
+    List<Widget> widgets = _forecast.map<Widget>((_item) {
+      return new Column(
+        children: <Widget>[
+          _getWeatherIcon(_item['cond_code_d'] ?? '999'),
+          Text(
+            _item['tmp_min'] + '~' + _item['tmp_max'] + '℃',
+          ),
+        ],
+      );
+    }).toList();
+    return widgets;
+  }
+
+  Widget _getWeatherIcon(String condCode) {
+    Color color = Colors.grey;
+    final int condCodeNum = int.parse(condCode);
+
+    if (condCodeNum == 100) {
+      // clear
+      color = Colors.orange;
+    } else if (condCodeNum >= 206 && condCodeNum <= 213) {
+      // strong gale or storm
+      color = Colors.red;
+    } else if (condCodeNum >= 300 && condCodeNum <= 318 || condCodeNum == 399) {
+      // rain
+      color = Colors.blue;
+    } else if (condCodeNum >= 400 && condCodeNum <= 499) {
+      // snow
+      color = Colors.white;
+    } else if ((condCodeNum >= 500 && condCodeNum <= 502) ||
+        (condCodeNum >= 509 && condCodeNum <= 515)) {
+      // fog or haze
+      color = Colors.white;
+    } else if (condCodeNum >= 503 && condCodeNum <= 508) {
+      // dust
+      color = Colors.yellow;
+    }
+
+    return new Image.network(
+      'https://cdn.heweather.com/cond_icon/' + condCode + '.png',
+      width: 40,
+      height: 40,
+      color: color,
+    );
   }
 
   @override
@@ -106,21 +155,17 @@ class _WeatherState extends State<Weather> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(_condText),
-                Text('体感温度:' + _fl + '℃'),
+                _getWeatherIcon(_condCode),
                 Text(_windDir + ' ' + _windSc + '级'),
               ],
             )
           ],
         ),
         Expanded(
-          child: ListView.builder(
-            scrollDirection: Axis.vertical,
-            itemCount: _forecast.length,
-            itemBuilder: (BuildContext context, int index) {
-              return new ListTile(
-                  title: new Text(_forecast[index]['cond_txt_d']));
-            },
+          child: GridView.count(
+            primary: false,
+            crossAxisCount: 5,
+            children: _getForecastWidgets(),
           ),
         )
       ],

@@ -39,9 +39,6 @@ class _WeatherState extends State<Weather> {
   String _locationName = '';
   String _temperature = '';
   String _condCode = '';
-  String _condText = '';
-  String _fl = '';
-  String _windDir = '';
   String _windSpd = '';
   String _hum = '';
   String _pcpn = '';
@@ -55,9 +52,6 @@ class _WeatherState extends State<Weather> {
       _locationName = basic['location'];
       _temperature = now['tmp'];
       _condCode = now['cond_code'];
-      _condText = now['cond_txt'];
-      _fl = now['fl'];
-      _windDir = now['wind_dir'];
       _windSpd = now['wind_spd'];
       _hum = now['hum'];
       _pcpn = now['pcpn'];
@@ -145,6 +139,7 @@ class _WeatherState extends State<Weather> {
 
   @override
   initState() {
+    super.initState();
     _getCities('beijing');
   }
 
@@ -199,7 +194,6 @@ class _WeatherState extends State<Weather> {
               ),
             )),
             Center(
-              // child: Text(_windDir + ' ' + _windSpd + '级'),
               child: Column(
                 children: <Widget>[
                   Padding(
@@ -278,12 +272,6 @@ class _WeatherState extends State<Weather> {
           ],
         ),
       ),
-      // bottomNavigationBar: BottomAppBar(
-      //   // color: themeData.accentColor,
-      //   child: Container(
-      //     height: 90.0,
-      //   ),
-      // ),
     );
   }
 }

@@ -3,6 +3,9 @@ import 'package:maid/service.dart';
 import 'service.dart' show getCity, getWeather, getForecast;
 import 'theme_data.dart' show themeData;
 
+const double IconSize = 40.0;
+const List<String> weekdays = ['周一', '周二', '周三', '周四', '周五', '周六', '周日', '周一'];
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -19,15 +22,7 @@ class MyApp extends StatelessWidget {
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(''),
-      ),
-      body: Container(
-        padding: EdgeInsets.fromLTRB(10, 30, 10, 10),
-        child: Weather(),
-      ),
-    );
+    return Weather();
   }
 }
 
@@ -47,7 +42,9 @@ class _WeatherState extends State<Weather> {
   String _condText = '';
   String _fl = '';
   String _windDir = '';
-  String _windSc = '';
+  String _windSpd = '';
+  String _hum = '';
+  String _pcpn = '';
   List _forecast = [];
 
   void _getWeather(weatherType) async {
@@ -61,7 +58,9 @@ class _WeatherState extends State<Weather> {
       _condText = now['cond_txt'];
       _fl = now['fl'];
       _windDir = now['wind_dir'];
-      _windSc = now['wind_sc'];
+      _windSpd = now['wind_spd'];
+      _hum = now['hum'];
+      _pcpn = now['pcpn'];
     });
   }
 
@@ -97,10 +96,11 @@ class _WeatherState extends State<Weather> {
     return widgets;
   }
 
-  Widget _getWeatherIcon(String condCode) {
+  Widget _getWeatherIcon(String condCode, {double size = IconSize}) {
     Color color = Colors.grey;
     final int condCodeNum = int.parse(condCode);
 
+    // TODO: refactor
     if (condCodeNum == 100) {
       // clear
       color = Colors.orange;
@@ -124,9 +124,22 @@ class _WeatherState extends State<Weather> {
 
     return new Image.network(
       'https://cdn.heweather.com/cond_icon/' + condCode + '.png',
-      width: 40,
-      height: 40,
-      color: color,
+      width: size,
+      height: size,
+      color: Colors.white,
+      // color: color,
+    );
+  }
+
+  Widget _getLocationInputWidget() {
+    return new TextField(
+      decoration: InputDecoration(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(30)),
+        ),
+        contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+        labelText: '地区',
+      ),
     );
   }
 
@@ -140,35 +153,137 @@ class _WeatherState extends State<Weather> {
     if (_temperature.length == 0) {
       return Text('');
     }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(_locationName),
-        Row(
+    return Scaffold(
+      body: Container(
+        padding: EdgeInsets.fromLTRB(20, 40, 20, 40),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text(
-              _temperature + '℃',
-              style: TextStyle(
-                fontSize: 70,
+            // _getLocationInputWidget(),
+            Center(
+                child: Padding(
+              padding: EdgeInsets.only(top: 20),
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    _locationName,
+                    style: TextStyle(
+                      fontSize: 40,
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: 8,
+                    ),
+                  ),
+                  Text(
+                    weekdays[new DateTime.now().weekday],
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 30),
+                    child: _getWeatherIcon(_condCode, size: 50.0),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: Text(
+                      ' ' + _temperature + '°',
+                      style: TextStyle(
+                        fontSize: 80,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )),
+            Center(
+              // child: Text(_windDir + ' ' + _windSpd + '级'),
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(top: 80),
+                    child: Column(
+                      children: <Widget>[
+                        Text(
+                          weekdays[new DateTime.now()
+                              .add(new Duration(days: 1))
+                              .weekday],
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            _getWeatherIcon(
+                                _forecast[0]['cond_code_d'] ?? '999'),
+                            Text(
+                              _forecast[0]['tmp_min'] +
+                                  '°/' +
+                                  _forecast[0]['tmp_max'] +
+                                  '°',
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 50),
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Column(
+                            children: <Widget>[
+                              _getWeatherIcon('507'),
+                              Text(_windSpd + 'km/h'),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            children: <Widget>[
+                              _getWeatherIcon('399'),
+                              Text(_pcpn + 'mm'),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            children: <Widget>[
+                              Icon(
+                                Icons.bubble_chart,
+                                size: IconSize,
+                              ),
+                              Text(_hum + '%'),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                _getWeatherIcon(_condCode),
-                Text(_windDir + ' ' + _windSc + '级'),
-              ],
-            )
+            // Expanded(
+            //   child: GridView.count(
+            //     primary: false,
+            //     crossAxisCount: 5,
+            //     children: _getForecastWidgets(),
+            //   ),
+            // ),
           ],
         ),
-        Expanded(
-          child: GridView.count(
-            primary: false,
-            crossAxisCount: 5,
-            children: _getForecastWidgets(),
-          ),
-        )
-      ],
+      ),
+      // bottomNavigationBar: BottomAppBar(
+      //   // color: themeData.accentColor,
+      //   child: Container(
+      //     height: 90.0,
+      //   ),
+      // ),
     );
   }
 }

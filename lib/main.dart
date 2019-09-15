@@ -91,37 +91,11 @@ class _WeatherState extends State<Weather> {
   }
 
   Widget _getWeatherIcon(String condCode, {double size = IconSize}) {
-    Color color = Colors.grey;
-    final int condCodeNum = int.parse(condCode);
-
-    // TODO: refactor
-    if (condCodeNum == 100) {
-      // clear
-      color = Colors.orange;
-    } else if (condCodeNum >= 206 && condCodeNum <= 213) {
-      // strong gale or storm
-      color = Colors.red;
-    } else if (condCodeNum >= 300 && condCodeNum <= 318 || condCodeNum == 399) {
-      // rain
-      color = Colors.blue;
-    } else if (condCodeNum >= 400 && condCodeNum <= 499) {
-      // snow
-      color = Colors.white;
-    } else if ((condCodeNum >= 500 && condCodeNum <= 502) ||
-        (condCodeNum >= 509 && condCodeNum <= 515)) {
-      // fog or haze
-      color = Colors.white;
-    } else if (condCodeNum >= 503 && condCodeNum <= 508) {
-      // dust
-      color = Colors.yellow;
-    }
-
     return new Image.network(
       'https://cdn.heweather.com/cond_icon/' + condCode + '.png',
       width: size,
       height: size,
       color: Colors.white,
-      // color: color,
     );
   }
 
@@ -150,6 +124,7 @@ class _WeatherState extends State<Weather> {
     }
     return Scaffold(
       body: Container(
+        color: Theme.of(context).backgroundColor,
         padding: EdgeInsets.fromLTRB(20, 40, 20, 40),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,42 +132,60 @@ class _WeatherState extends State<Weather> {
           children: <Widget>[
             // _getLocationInputWidget(),
             Center(
-                child: Padding(
-              padding: EdgeInsets.only(top: 20),
-              child: Column(
-                children: <Widget>[
-                  Text(
-                    _locationName,
-                    style: TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.w400,
-                      letterSpacing: 8,
-                    ),
-                  ),
-                  Text(
-                    weekdays[new DateTime.now().weekday],
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w300,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 30),
-                    child: _getWeatherIcon(_condCode, size: 50.0),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 10),
-                    child: Text(
-                      ' ' + _temperature + '°',
+              child: Padding(
+                padding: EdgeInsets.only(top: 20),
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      weekdays[new DateTime.now().weekday],
                       style: TextStyle(
-                        fontSize: 80,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 30,
+                        fontWeight: FontWeight.w400,
+                        color: themeData.textTheme.display1.color,
                       ),
                     ),
-                  ),
-                ],
+                    Padding(
+                      padding: EdgeInsets.only(top: 2),
+                      child: Text(
+                        _locationName,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 30),
+                      child: _getWeatherIcon(_condCode, size: 50.0),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            ' ' + _temperature,
+                            style: TextStyle(
+                              fontSize: 80,
+                              fontWeight: FontWeight.w500,
+                              color: themeData.textTheme.display1.color,
+                            ),
+                          ),
+                          Text(
+                            '°',
+                            style: TextStyle(
+                              fontSize: 80,
+                              fontWeight: FontWeight.w200,
+                              color: themeData.textTheme.display1.color,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            )),
+            ),
             Center(
               child: Column(
                 children: <Widget>[
@@ -207,6 +200,7 @@ class _WeatherState extends State<Weather> {
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w300,
+                            color: themeData.textTheme.display1.color,
                           ),
                         ),
                         Row(
@@ -219,6 +213,9 @@ class _WeatherState extends State<Weather> {
                                   '°/' +
                                   _forecast[0]['tmp_max'] +
                                   '°',
+                              style: TextStyle(
+                                color: themeData.textTheme.display1.color,
+                              ),
                             ),
                           ],
                         ),
@@ -233,7 +230,12 @@ class _WeatherState extends State<Weather> {
                           child: Column(
                             children: <Widget>[
                               _getWeatherIcon('507'),
-                              Text(_windSpd + 'km/h'),
+                              Text(
+                                _windSpd + 'km/h',
+                                style: TextStyle(
+                                  color: themeData.textTheme.display1.color,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -241,7 +243,12 @@ class _WeatherState extends State<Weather> {
                           child: Column(
                             children: <Widget>[
                               _getWeatherIcon('399'),
-                              Text(_pcpn + 'mm'),
+                              Text(
+                                _pcpn + 'mm',
+                                style: TextStyle(
+                                  color: themeData.textTheme.display1.color,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -251,8 +258,14 @@ class _WeatherState extends State<Weather> {
                               Icon(
                                 Icons.bubble_chart,
                                 size: IconSize,
+                                color: themeData.textTheme.display1.color,
                               ),
-                              Text(_hum + '%'),
+                              Text(
+                                _hum + '%',
+                                style: TextStyle(
+                                  color: themeData.textTheme.display1.color,
+                                ),
+                              ),
                             ],
                           ),
                         ),

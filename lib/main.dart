@@ -47,21 +47,21 @@ class _WeatherState extends State<Weather> {
   void _getWeather(weatherType) async {
     final weather = await getWeather(_location);
     setState(() {
-      final basic = weather['basic'];
-      final now = weather['now'];
-      _locationName = basic['location'];
-      _temperature = now['tmp'];
-      _condCode = now['cond_code'];
-      _windSpd = now['wind_spd'];
-      _hum = now['hum'];
-      _pcpn = now['pcpn'];
+      final basic = weather['basic'] ?? {};
+      final now = weather['now'] ?? {};
+      _locationName = basic['location'] ?? '';
+      _temperature = now['tmp'] ?? '';
+      _condCode = now['cond_code'] ?? '';
+      _windSpd = now['wind_spd'] ?? '';
+      _hum = now['hum'] ?? '';
+      _pcpn = now['pcpn'] ?? '';
     });
   }
 
   void _getForecast() async {
     final forecast = await getForecast(_location);
     setState(() {
-      _forecast = forecast['daily_forecast'];
+      _forecast = forecast['daily_forecast'] ?? [];
       print(_forecast);
     });
   }

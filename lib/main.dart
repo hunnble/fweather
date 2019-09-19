@@ -4,7 +4,8 @@ import 'service.dart' show getCity, getWeather, getForecast;
 import 'theme_data.dart' show themeData;
 
 const double IconSize = 40.0;
-const List<String> weekdays = ['周一', '周二', '周三', '周四', '周五', '周六', '周日', '周一'];
+// const List<String> weekdays = ['周一', '周二', '周三', '周四', '周五', '周六', '周日', '周一'];
+const List<String> weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday'];
 
 void main() => runApp(MyApp());
 
@@ -35,7 +36,7 @@ class Weather extends StatefulWidget {
 
 class _WeatherState extends State<Weather> {
   List _cities = [];
-  String _location = '北京';
+  String _location = 'Beijing';
   String _locationName = '';
   String _temperature = '';
   String _condCode = '';
@@ -95,7 +96,7 @@ class _WeatherState extends State<Weather> {
       'https://cdn.heweather.com/cond_icon/' + condCode + '.png',
       width: size,
       height: size,
-      color: Colors.white,
+      color: themeData.textTheme.display1.color,
     );
   }
 
@@ -106,7 +107,7 @@ class _WeatherState extends State<Weather> {
           borderRadius: BorderRadius.all(Radius.circular(30)),
         ),
         contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-        labelText: '地区',
+        labelText: 'Location',
       ),
     );
   }
@@ -133,14 +134,15 @@ class _WeatherState extends State<Weather> {
             // _getLocationInputWidget(),
             Center(
               child: Padding(
-                padding: EdgeInsets.only(top: 20),
+                padding: EdgeInsets.only(top: 50),
                 child: Column(
                   children: <Widget>[
                     Text(
                       weekdays[new DateTime.now().weekday],
                       style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.w400,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w300,
+                        fontFamily: themeData.textTheme.display1.fontFamily,
                         color: themeData.textTheme.display1.color,
                       ),
                     ),
@@ -149,14 +151,15 @@ class _WeatherState extends State<Weather> {
                       child: Text(
                         _locationName,
                         style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey,
+                          fontSize: 16,
+                          fontFamily: themeData.textTheme.display1.fontFamily,
+                          color: themeData.textTheme.display1.color,
                         ),
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(top: 30),
-                      child: _getWeatherIcon(_condCode, size: 50.0),
+                      padding: EdgeInsets.only(top: 60),
+                      child: _getWeatherIcon(_condCode, size: 60.0),
                     ),
                     Padding(
                       padding: EdgeInsets.only(top: 10),
@@ -167,12 +170,13 @@ class _WeatherState extends State<Weather> {
                             ' ' + _temperature,
                             style: TextStyle(
                               fontSize: 80,
-                              fontWeight: FontWeight.w500,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: themeData.textTheme.display1.fontFamily,
                               color: themeData.textTheme.display1.color,
                             ),
                           ),
                           Text(
-                            '°',
+                            '° ',
                             style: TextStyle(
                               fontSize: 80,
                               fontWeight: FontWeight.w200,
@@ -200,6 +204,7 @@ class _WeatherState extends State<Weather> {
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w300,
+                            fontFamily: themeData.textTheme.display1.fontFamily,
                             color: themeData.textTheme.display1.color,
                           ),
                         ),
@@ -214,6 +219,7 @@ class _WeatherState extends State<Weather> {
                                   _forecast[0]['tmp_max'] +
                                   '°',
                               style: TextStyle(
+                                fontFamily: themeData.textTheme.display1.fontFamily,
                                 color: themeData.textTheme.display1.color,
                               ),
                             ),
@@ -233,6 +239,7 @@ class _WeatherState extends State<Weather> {
                               Text(
                                 _windSpd + 'km/h',
                                 style: TextStyle(
+                                  fontFamily: themeData.textTheme.display1.fontFamily,
                                   color: themeData.textTheme.display1.color,
                                 ),
                               ),
@@ -246,6 +253,7 @@ class _WeatherState extends State<Weather> {
                               Text(
                                 _pcpn + 'mm',
                                 style: TextStyle(
+                                  fontFamily: themeData.textTheme.display1.fontFamily,
                                   color: themeData.textTheme.display1.color,
                                 ),
                               ),
@@ -263,6 +271,7 @@ class _WeatherState extends State<Weather> {
                               Text(
                                 _hum + '%',
                                 style: TextStyle(
+                                  fontFamily: themeData.textTheme.display1.fontFamily,
                                   color: themeData.textTheme.display1.color,
                                 ),
                               ),
@@ -275,13 +284,6 @@ class _WeatherState extends State<Weather> {
                 ],
               ),
             ),
-            // Expanded(
-            //   child: GridView.count(
-            //     primary: false,
-            //     crossAxisCount: 5,
-            //     children: _getForecastWidgets(),
-            //   ),
-            // ),
           ],
         ),
       ),

@@ -1,4 +1,4 @@
-package com.example.maid;
+package com.example.fweather;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

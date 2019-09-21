@@ -32,7 +32,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.example.maid"
+        applicationId "com.example.fweather"
         minSdkVersion 16
         targetSdkVersion 28
         versionCode flutterVersionCode.toInteger()

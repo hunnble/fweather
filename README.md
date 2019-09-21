@@ -1,16 +1,17 @@
-# maid
+# fweather
 
-A new Flutter project.
+使用 Flutter 开发的天气 APP
 
-## Getting Started
+## 预览
 
-This project is a starting point for a Flutter application.
+### Android
 
-A few resources to get you started if this is your first Flutter project:
+<img src='./docs/screenshot-android.png' width=280>
 
-- [Lab: Write your first Flutter app](https://flutter.io/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.io/docs/cookbook)
+### iOS
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+<img src='./docs/screenshot-ios.png' width=280>
+
+### iPad
+
+<img src='./docs/screenshot-ipad.png' width=280>
